@@ -97,6 +97,15 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
+        name="camera"
+        options={{
+          title: 'Camera',
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="camera-alt" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="history"
         options={{
           title: 'Survey History',
