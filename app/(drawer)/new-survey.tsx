@@ -50,15 +50,36 @@ export default function CreateSurveyScreen() {
   const validate = (): boolean => {
     const newErrors: FormErrors = {};
 
-    if (!siteName.trim()) newErrors.siteName = 'Site name is required';
-    if (!clientName.trim()) newErrors.clientName = 'Client name is required';
-    if (!description.trim()) newErrors.description = 'Description is required';
+    if (!siteName.trim()) {
+      newErrors.siteName = 'Site name is required';
+    } else if (siteName.trim().length < 3) {
+      newErrors.siteName = 'Site name must be at least 3 characters';
+    }
+
+    if (!clientName.trim()) {
+      newErrors.clientName = 'Client name is required';
+    } else if (clientName.trim().length < 3) {
+      newErrors.clientName = 'Client name must be at least 3 characters';
+    }
+
+    if (!description.trim()) {
+      newErrors.description = 'Description is required';
+    } else if (description.trim().length < 10) {
+      newErrors.description = 'Description must be at least 10 characters';
+    }
+
     if (!priority) newErrors.priority = 'Please select a priority';
     if (!date) newErrors.date = 'Please select a date';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  React.useEffect(() => {
+    if (submitted) {
+      validate();
+    }
+  }, [siteName, clientName, description, priority, date, submitted]);
 
   const handleSubmit = () => {
     setSubmitted(true);
