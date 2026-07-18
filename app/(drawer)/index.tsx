@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text } from 'react-native';
+import { StyleSheet, ScrollView, View, Text, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { DashboardHeader } from '@/components/dashboard/dashboard-header';
 import { WelcomeCard } from '@/components/dashboard/welcome-card';
@@ -44,6 +45,7 @@ const MOCK_RECENT_SURVEYS = [
 ];
 
 export default function DashboardScreen() {
+  const router = useRouter();
   const background = useThemeColor({}, 'background');
   const text = useThemeColor({}, 'text');
   const primary = useThemeColor({}, 'primary');
@@ -82,14 +84,14 @@ export default function DashboardScreen() {
             <QuickActionCard
               title="New Survey"
               icon="add-circle-outline"
-              onPress={() => {}}
+              onPress={() => router.push('/new-survey')}
               variant="primary"
             />
             <View style={styles.actionSpacer} />
             <QuickActionCard
               title="View History"
               icon="history"
-              onPress={() => {}}
+              onPress={() => router.push('/history')}
               variant="accent"
             />
           </View>
@@ -97,14 +99,14 @@ export default function DashboardScreen() {
             <QuickActionCard
               title="Upload Data"
               icon="cloud-upload"
-              onPress={() => {}}
+              onPress={() => Alert.alert('Coming Soon', 'Upload Data feature will be available in a future update.')}
               variant="muted"
             />
             <View style={styles.actionSpacer} />
             <QuickActionCard
               title="Sync Status"
               icon="sync"
-              onPress={() => {}}
+              onPress={() => Alert.alert('Coming Soon', 'Sync Status feature will be available in a future update.')}
               variant="primary"
             />
           </View>
@@ -113,7 +115,12 @@ export default function DashboardScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { color: text }]}>Recent Surveys</Text>
-            <Text style={[styles.seeAll, { color: primary }]}>See All</Text>
+            <Text
+              style={[styles.seeAll, { color: primary }]}
+              onPress={() => router.push('/history')}
+            >
+              See All
+            </Text>
           </View>
           <Card style={styles.recentCard}>
             {MOCK_RECENT_SURVEYS.map((survey, index) => (
