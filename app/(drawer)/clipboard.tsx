@@ -30,10 +30,8 @@ export default function ClipboardScreen() {
 
   useEffect(() => {
     checkClipboard();
-    const subscription = Clipboard.addClipboardListener(({ contentTypes }) => {
-      if (contentTypes.includes(Clipboard.StringFormat)) {
-        checkClipboard();
-      }
+    const subscription = Clipboard.addClipboardListener(() => {
+      checkClipboard();
     });
     return () => {
       Clipboard.removeClipboardListener(subscription);
