@@ -115,6 +115,15 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
+        name="location"
+        options={{
+          title: 'Location',
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="location-on" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="settings"
         options={{
           title: 'Settings',
