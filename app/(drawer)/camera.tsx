@@ -53,9 +53,11 @@ export default function CameraScreen() {
       const result = await cameraRef.current.takePictureAsync({ quality: 0.8 });
       if (result?.uri) {
         if (!mediaPermission?.granted) {
-          await requestMediaPermission();
-        }
-        if (mediaPermission?.granted) {
+          const { granted } = await requestMediaPermission();
+          if (granted) {
+            await MediaLibrary.saveToLibraryAsync(result.uri);
+          }
+        } else {
           await MediaLibrary.saveToLibraryAsync(result.uri);
         }
         const photo: CapturedPhoto = { uri: result.uri, savedAt: new Date() };
