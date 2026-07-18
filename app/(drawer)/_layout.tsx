@@ -124,6 +124,15 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
+        name="contacts"
+        options={{
+          title: 'Contacts',
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="contacts" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="settings"
         options={{
           title: 'Settings',
