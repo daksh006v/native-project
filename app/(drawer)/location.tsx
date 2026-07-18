@@ -17,7 +17,7 @@ export default function LocationScreen() {
   const primary = useThemeColor({}, 'primary');
   const primaryLight = useThemeColor({}, 'primaryLight');
   const card = useThemeColor({}, 'card');
-  const border = useThemeColor({}, 'border');
+  const border = useThemeColor({}, 'cardBorder');
 
   const [status, requestPermission] = Location.useForegroundPermissions();
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
