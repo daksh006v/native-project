@@ -35,6 +35,7 @@ export default function CameraScreen() {
   const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
   const [facing, setFacing] = useState<CameraType>('back');
   const [capturing, setCapturing] = useState(false);
+  const [cameraReady, setCameraReady] = useState(false);
   const [photos, setPhotos] = useState<CapturedPhoto[]>([]);
   const [showSaved, setShowSaved] = useState(false);
 
@@ -47,10 +48,13 @@ export default function CameraScreen() {
   };
 
   const takePicture = async () => {
-    if (!cameraRef.current || capturing) return;
+    if (!cameraRef.current || capturing || !cameraReady) return;
     setCapturing(true);
     try {
-      const result = await cameraRef.current.takePictureAsync({ quality: 0.8 });
+      const result = await cameraRef.current.takePictureAsync({
+        quality: 0.8,
+        skipProcessing: false,
+      });
       if (result?.uri) {
         if (!mediaPermission?.granted) {
           const { granted } = await requestMediaPermission();
@@ -150,7 +154,12 @@ export default function CameraScreen() {
         </View>
       )}
 
-      <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
+      <CameraView
+        ref={cameraRef}
+        style={styles.camera}
+        facing={facing}
+        onCameraReady={() => setCameraReady(true)}
+      >
         <View style={styles.cameraOverlay}>
           <View style={styles.viewfinder}>
             <View style={[styles.corner, styles.cornerTL]} />
@@ -176,13 +185,15 @@ export default function CameraScreen() {
         <Pressable
           style={({ pressed }) => [
             styles.captureBtn,
-            capturing && styles.captureBtnDisabled,
+            (capturing || !cameraReady) && styles.captureBtnDisabled,
             pressed && styles.captureBtnPressed,
           ]}
           onPress={takePicture}
-          disabled={capturing}
+          disabled={capturing || !cameraReady}
         >
-          {capturing ? (
+          {!cameraReady ? (
+            <ActivityIndicator size="small" color="#FFFFFF" />
+          ) : capturing ? (
             <ActivityIndicator size="large" color="#FFFFFF" />
           ) : (
             <View style={styles.captureBtnInner} />
