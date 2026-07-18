@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions, type CameraType } from 'expo-camera';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
