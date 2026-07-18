@@ -32,12 +32,12 @@ export default function CameraScreen() {
   const primaryLight = useThemeColor({}, 'primaryLight');
 
   const [permission, requestPermission] = useCameraPermissions();
-  const [mediaPermission, requestMediaPermission] = MediaLibrary.usePermissions();
   const [facing, setFacing] = useState<CameraType>('back');
   const [capturing, setCapturing] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [photos, setPhotos] = useState<CapturedPhoto[]>([]);
   const [showSaved, setShowSaved] = useState(false);
+  const [mediaGranted, setMediaGranted] = useState(false);
 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
@@ -53,8 +53,9 @@ export default function CameraScreen() {
     try {
       const result = await cameraRef.current.takePictureAsync();
       if (result?.uri) {
-        if (!mediaPermission?.granted) {
-          const { granted } = await requestMediaPermission();
+        if (!mediaGranted) {
+          const { granted } = await MediaLibrary.requestPermissionsAsync();
+          setMediaGranted(granted);
           if (granted) {
             await MediaLibrary.saveToLibraryAsync(result.uri);
           }
