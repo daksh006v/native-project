@@ -150,6 +150,13 @@ export default function DrawerLayout() {
           ),
         }}
       />
+      <Drawer.Screen
+        name="survey-preview"
+        options={{
+          title: 'Survey Preview',
+          drawerItemStyle: { display: 'none' },
+        }}
+      />
     </Drawer>
   );
 }

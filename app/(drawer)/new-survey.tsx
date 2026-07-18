@@ -7,11 +7,11 @@ import {
   Pressable,
   KeyboardAvoidingView,
   Platform,
-  Alert,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Card } from '@/components/ui/card';
 import { FormField } from '@/components/ui/form-field';
@@ -30,6 +30,7 @@ type FormErrors = {
 
 export default function CreateSurveyScreen() {
   const navigation = useNavigation();
+  const router = useRouter();
   const insets = useSafeAreaInsets();
   const background = useThemeColor({}, 'background');
   const text = useThemeColor({}, 'text');
@@ -85,11 +86,16 @@ export default function CreateSurveyScreen() {
     setSubmitted(true);
     if (!validate()) return;
 
-    Alert.alert(
-      'Survey Created',
-      `Site: ${siteName}\nClient: ${clientName}\nPriority: ${priority}\nDate: ${date?.toLocaleDateString()}`,
-      [{ text: 'OK' }],
-    );
+    router.push({
+      pathname: '/(drawer)/survey-preview',
+      params: {
+        siteName: siteName.trim(),
+        clientName: clientName.trim(),
+        description: description.trim(),
+        priority: priority!,
+        date: date!.toISOString(),
+      },
+    });
   };
 
   const openDrawer = () => {
