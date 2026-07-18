@@ -10,15 +10,25 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions, type CameraType } from 'expo-camera';
-import * as MediaLibrary from 'expo-media-library';
+import * as FileSystem from 'expo-file-system';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 
+const PHOTO_DIR = `${FileSystem.documentDirectory}surveys/`;
+
 type CapturedPhoto = {
   uri: string;
   savedAt: Date;
+  fileName: string;
 };
+
+async function ensureDir() {
+  const dirInfo = await FileSystem.getInfoAsync(PHOTO_DIR);
+  if (!dirInfo.exists) {
+    await FileSystem.makeDirectoryAsync(PHOTO_DIR, { intermediates: true });
+  }
+}
 
 export default function CameraScreen() {
   const navigation = useNavigation();
@@ -37,7 +47,6 @@ export default function CameraScreen() {
   const [cameraReady, setCameraReady] = useState(false);
   const [photos, setPhotos] = useState<CapturedPhoto[]>([]);
   const [showSaved, setShowSaved] = useState(false);
-  const [mediaGranted, setMediaGranted] = useState(false);
 
   const openDrawer = () => {
     navigation.dispatch(DrawerActions.openDrawer());
@@ -53,16 +62,16 @@ export default function CameraScreen() {
     try {
       const result = await cameraRef.current.takePictureAsync();
       if (result?.uri) {
-        if (!mediaGranted) {
-          const { granted } = await MediaLibrary.requestPermissionsAsync();
-          setMediaGranted(granted);
-          if (granted) {
-            await MediaLibrary.saveToLibraryAsync(result.uri);
-          }
-        } else {
-          await MediaLibrary.saveToLibraryAsync(result.uri);
-        }
-        const photo: CapturedPhoto = { uri: result.uri, savedAt: new Date() };
+        await ensureDir();
+        const timestamp = Date.now();
+        const fileName = `survey_${timestamp}.jpg`;
+        const dest = `${PHOTO_DIR}${fileName}`;
+        await FileSystem.copyAsync({ from: result.uri, to: dest });
+        const photo: CapturedPhoto = {
+          uri: dest,
+          savedAt: new Date(),
+          fileName,
+        };
         setPhotos((prev) => [photo, ...prev]);
         setShowSaved(true);
         setTimeout(() => setShowSaved(false), 1500);
@@ -81,7 +90,7 @@ export default function CameraScreen() {
     }
     Alert.alert(
       'Finish Capturing',
-      `You captured ${photos.length} photo${photos.length > 1 ? 's' : ''}. All photos have been saved to your gallery.`,
+      `${photos.length} photo${photos.length > 1 ? 's' : ''} saved to app storage.`,
       [{ text: 'OK', onPress: () => navigation.goBack() }],
     );
   };
@@ -134,7 +143,9 @@ export default function CameraScreen() {
         <View style={styles.titleSection}>
           <Text style={styles.cameraTitle}>Camera</Text>
           {photos.length > 0 && (
-            <Text style={styles.photoCount}>{photos.length} photo{photos.length > 1 ? 's' : ''} saved</Text>
+            <Text style={styles.photoCount}>
+              {photos.length} photo{photos.length > 1 ? 's' : ''} captured
+            </Text>
           )}
         </View>
         <Pressable
@@ -148,7 +159,7 @@ export default function CameraScreen() {
       {showSaved && (
         <View style={[styles.savedToast, { top: insets.top + 60 }]}>
           <MaterialIcons name="check-circle" size={18} color="#FFFFFF" />
-          <Text style={styles.savedToastText}>Saved to gallery</Text>
+          <Text style={styles.savedToastText}>Photo captured</Text>
         </View>
       )}
 
@@ -170,12 +181,12 @@ export default function CameraScreen() {
 
       <View style={[styles.cameraFooter, { paddingBottom: insets.bottom + 12 }]}>
         {lastPhoto ? (
-          <Pressable style={styles.thumbnailBtn} onPress={() => {}}>
+          <View style={styles.thumbnailWrap}>
             <Image source={{ uri: lastPhoto.uri }} style={styles.thumbnail} />
             <View style={[styles.thumbnailBadge, { backgroundColor: primary }]}>
               <Text style={styles.thumbnailBadgeText}>{photos.length}</Text>
             </View>
-          </Pressable>
+          </View>
         ) : (
           <View style={styles.sideBtnPlaceholder} />
         )}
@@ -304,8 +315,7 @@ const styles = StyleSheet.create({
   },
   savedToast: {
     position: 'absolute',
-    left: '50%',
-    transform: [{ translateX: -90 }],
+    alignSelf: 'center',
     zIndex: 20,
     flexDirection: 'row',
     alignItems: 'center',
@@ -389,7 +399,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
   },
-  thumbnailBtn: {
+  thumbnailWrap: {
     width: 52,
     height: 52,
     borderRadius: 12,

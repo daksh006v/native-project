@@ -21,10 +21,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "RECORD_AUDIO"
+        "CAMERA"
       ]
     },
     "web": {
@@ -50,13 +47,6 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera for field surveys",
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone"
-        }
-      ],
-      [
-        "expo-media-library",
-        {
-          "photosPermission": "Allow $(PRODUCT_NAME) to save survey photos to your gallery",
-          "savePhotosPermission": "Allow $(PRODUCT_NAME) to save survey photos to your gallery"
         }
       ]
     ],
