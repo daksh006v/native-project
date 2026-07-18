@@ -10,10 +10,10 @@ import { RecentSurveyItem } from '@/components/dashboard/recent-survey-item';
 import { Card } from '@/components/ui/card';
 
 const MOCK_STUDENT = {
-  name: 'Daksh Verma',
-  studentId: 'CS-2024-0847',
+  name: 'Daksh Bajaniya',
+  studentId: 'CS-2025-29',
   department: 'Computer Science',
-  semester: '6th',
+  semester: '3rd',
 };
 
 const MOCK_RECENT_SURVEYS = [

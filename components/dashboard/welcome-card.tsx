@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { Card } from '@/components/ui/card';
 import { Avatar } from '@/components/ui/avatar';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type WelcomeCardProps = {
   studentName: string;
@@ -14,6 +15,9 @@ type WelcomeCardProps = {
 export function WelcomeCard({ studentName, studentId, department, semester }: WelcomeCardProps) {
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
+  const primary = useThemeColor({}, 'primary');
+  const primaryLight = useThemeColor({}, 'primaryLight');
+
   const getGreeting = () => {
     const hour = new Date().getHours();
     if (hour < 12) return 'Good Morning';
@@ -31,32 +35,34 @@ export function WelcomeCard({ studentName, studentId, department, semester }: We
         <Avatar name={studentName} size={56} />
       </View>
 
-      <View style={[styles.divider, { backgroundColor: useThemeColor({}, 'separator') }]} />
-
-      <View style={styles.detailsRow}>
-        <DetailItem label="ID" value={studentId} color={muted} textColor={text} />
-        <DetailItem label="Department" value={department} color={muted} textColor={text} />
-        <DetailItem label="Semester" value={semester} color={muted} textColor={text} />
+      <View style={styles.infoRow}>
+        <InfoChip icon="badge" label={studentId} bg={primaryLight} iconColor={primary} textColor={text} />
+        <InfoChip icon="school" label={department} bg={primaryLight} iconColor={primary} textColor={text} />
+        <InfoChip icon="calendar-today" label={semester} bg={primaryLight} iconColor={primary} textColor={text} />
       </View>
     </Card>
   );
 }
 
-function DetailItem({
+function InfoChip({
+  icon,
   label,
-  value,
-  color,
+  bg,
+  iconColor,
   textColor,
 }: {
+  icon: keyof typeof MaterialIcons.glyphMap;
   label: string;
-  value: string;
-  color: string;
+  bg: string;
+  iconColor: string;
   textColor: string;
 }) {
   return (
-    <View style={styles.detailItem}>
-      <Text style={[styles.detailLabel, { color }]}>{label}</Text>
-      <Text style={[styles.detailValue, { color: textColor }]}>{value}</Text>
+    <View style={[styles.chip, { backgroundColor: bg }]}>
+      <MaterialIcons name={icon} size={14} color={iconColor} />
+      <Text style={[styles.chipLabel, { color: textColor }]} numberOfLines={1}>
+        {label}
+      </Text>
     </View>
   );
 }
@@ -82,24 +88,22 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
   },
-  divider: {
-    height: 1,
-  },
-  detailsRow: {
+  infoRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 8,
   },
-  detailItem: {
-    gap: 2,
+  chip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
   },
-  detailLabel: {
-    fontSize: 12,
-    fontWeight: '500',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  detailValue: {
-    fontSize: 14,
+  chipLabel: {
+    fontSize: 13,
     fontWeight: '600',
+    flexShrink: 1,
   },
 });

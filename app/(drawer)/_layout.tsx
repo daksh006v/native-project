@@ -29,10 +29,10 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
           { paddingTop: insets.top + 16, borderBottomColor: separator },
         ]}
       >
-        <Avatar name="Daksh Verma" size={64} />
+        <Avatar name="Daksh Bajaniya" size={64} />
         <View style={styles.headerInfo}>
-          <Text style={[styles.name, { color: text }]}>Daksh Verma</Text>
-          <Text style={[styles.email, { color: muted }]}>daksh.verma@university.edu</Text>
+          <Text style={[styles.name, { color: text }]}>Daksh Bajaniya</Text>
+          <Text style={[styles.email, { color: muted }]}>daksh.bajaniya@university.edu</Text>
           <View style={[styles.roleBadge, { backgroundColor: primary + '20' }]}>
             <Text style={[styles.roleText, { color: primary }]}>Field Researcher</Text>
           </View>
