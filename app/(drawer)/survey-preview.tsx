@@ -60,7 +60,7 @@ export default function SurveyPreviewScreen() {
       Alert.alert('Success', 'Survey has been submitted successfully!', [
         {
           text: 'View History',
-          onPress: () => router.replace('/(drawer)/history'),
+          onPress: () => router.replace('/(drawer)/(tabs)/history'),
         },
       ]);
     } catch {

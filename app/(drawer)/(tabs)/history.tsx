@@ -137,7 +137,7 @@ export default function HistoryScreen() {
   }, [surveys, activeFilter, searchQuery]);
 
   const renderItem = ({ item }: { item: Survey }) => {
-    const pColor = priorityColors[item.priority];
+    const pColor = priorityColors[item.priority as Priority];
     const dateStr = new Date(item.date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',

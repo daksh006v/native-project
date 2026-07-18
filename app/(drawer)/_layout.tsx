@@ -79,20 +79,11 @@ export default function DrawerLayout() {
       }}
     >
       <Drawer.Screen
-        name="index"
+        name="(tabs)"
         options={{
           title: 'Dashboard',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="dashboard" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="new-survey"
-        options={{
-          title: 'New Survey',
-          drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="add-circle-outline" size={size} color={color} />
           ),
         }}
       />
@@ -102,15 +93,6 @@ export default function DrawerLayout() {
           title: 'Camera',
           drawerIcon: ({ color, size }) => (
             <MaterialIcons name="camera-alt" size={size} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="history"
-        options={{
-          title: 'Survey History',
-          drawerIcon: ({ color, size }) => (
-            <MaterialIcons name="history" size={size} color={color} />
           ),
         }}
       />
