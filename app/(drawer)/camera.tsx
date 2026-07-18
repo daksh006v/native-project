@@ -51,10 +51,7 @@ export default function CameraScreen() {
     if (!cameraRef.current || capturing || !cameraReady) return;
     setCapturing(true);
     try {
-      const result = await cameraRef.current.takePictureAsync({
-        quality: 0.8,
-        skipProcessing: false,
-      });
+      const result = await cameraRef.current.takePictureAsync();
       if (result?.uri) {
         if (!mediaPermission?.granted) {
           const { granted } = await requestMediaPermission();
@@ -69,8 +66,8 @@ export default function CameraScreen() {
         setShowSaved(true);
         setTimeout(() => setShowSaved(false), 1500);
       }
-    } catch {
-      Alert.alert('Error', 'Failed to capture photo. Please try again.');
+    } catch (err: any) {
+      Alert.alert('Error', err?.message || 'Failed to capture photo. Please try again.');
     } finally {
       setCapturing(false);
     }
