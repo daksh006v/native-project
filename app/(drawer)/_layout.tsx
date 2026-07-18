@@ -133,6 +133,15 @@ export default function DrawerLayout() {
         }}
       />
       <Drawer.Screen
+        name="clipboard"
+        options={{
+          title: 'Clipboard',
+          drawerIcon: ({ color, size }) => (
+            <MaterialIcons name="content-paste" size={size} color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
         name="settings"
         options={{
           title: 'Settings',
