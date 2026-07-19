@@ -1,50 +1,89 @@
-# Welcome to your Expo app 👋
+<div align="center">
+  <img src="./assets/images/icon.png" alt="Native Project Logo" width="120" height="120" />
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+  <h1>🚀 Native Project</h1>
+  
+  <p>
+    <strong>A robust React Native application built with Expo, showcasing native device capabilities.</strong>
+  </p>
 
-## Get started
+  <p>
+    <a href="https://github.com/daksh006v/native-project/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/Download-APK-00C853?style=for-the-badge&logo=android" alt="Download APK" /></a>
+    <a href="https://reactnative.dev/"><img src="https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Native" /></a>
+    <a href="https://expo.dev/"><img src="https://img.shields.io/badge/Expo-1B1F23?style=for-the-badge&logo=expo&logoColor=white" alt="Expo" /></a>
+  </p>
+</div>
 
-1. Install dependencies
+<hr />
 
-   ```bash
-   npm install
-   ```
+## 🌟 Overview
 
-2. Start the app
+**Native Project** is a feature-rich mobile application demonstrating seamless integration with device hardware APIs using Expo. Designed with modern UI/UX principles, the app features a responsive drawer navigation and integrates core functionalities like device camera, location services, contact management, and clipboard utilities all under one roof.
 
-   ```bash
-   npx expo start
-   ```
+### 🎥 See it in Action
 
-In the output, you'll find options to open the app in a
+[![App Demo Video Placeholder](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+> *[Replace this with the actual YouTube Video Link]*
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### 📥 Download the App
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Experience the app natively on your Android device:
+- **[Download Production APK (v1.0.0)](https://github.com/daksh006v/native-project/releases/tag/v1.0.0)**
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## ✨ Features
 
+- **📸 Camera Integration:** Capture photos and perform field surveys using `expo-camera`.
+- **📍 Location & Maps:** Fetch and display real-time coordinates using `expo-location`.
+- **📋 Clipboard Manager:** Easily copy and paste device data safely with `expo-clipboard`.
+- **📇 Contact Sync:** Browse and manage device contacts seamlessly via `expo-contacts`.
+- **📱 Responsive UI:** Modern design utilizing React Native Reanimated and Safe Area views.
+- **🧭 Intuitive Navigation:** Easy-to-use drawer and tab layouts built on Expo Router.
+
+---
+
+## 🛠 Tech Stack
+
+- **Framework:** [React Native](https://reactnative.dev/)
+- **SDK:** [Expo (v54)](https://expo.dev)
+- **Routing:** [Expo Router](https://docs.expo.dev/router/introduction/)
+- **Navigation:** React Navigation (Drawer & Tabs)
+- **State/Storage:** AsyncStorage
+- **Language:** TypeScript
+
+---
+
+## 🚀 Quick Start
+
+Follow these instructions to run the project locally.
+
+### 1. Clone the repository
 ```bash
-npm run reset-project
+git clone https://github.com/daksh006v/native-project.git
+cd native-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Install Dependencies
+```bash
+npm install
+```
 
-## Learn more
+### 3. Start the Development Server
+```bash
+npx expo start
+```
+Use the [Expo Go](https://expo.dev/go) app on your mobile device to scan the QR code and view the app instantly!
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## 🤝 Contributing
 
-## Join the community
+Contributions, issues, and feature requests are welcome! 
+Feel free to check out the [issues page](https://github.com/daksh006v/native-project/issues).
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+<div align="center">
+  Made with ❤️ using React Native & Expo
+</div>
