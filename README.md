@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./assets/images/icon.png" alt="SmartSurvey Logo" width="120" height="120" />
 
-  <h1>🚀 SmartSurvey (Native Project)</h1>
+  <h1>SmartSurvey (Native Project)</h1>
   
   <p>
     <strong>A premium, modern React Native field data collection app built with Expo, showcasing seamless hardware integration and stunning aesthetics.</strong>
