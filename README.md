@@ -1,10 +1,10 @@
 <div align="center">
-  <img src="./assets/images/icon.png" alt="Native Project Logo" width="120" height="120" />
+  <img src="./assets/images/icon.png" alt="SmartSurvey Logo" width="120" height="120" />
 
-  <h1>🚀 Native Project</h1>
+  <h1>🚀 SmartSurvey (Native Project)</h1>
   
   <p>
-    <strong>A robust React Native application built with Expo, showcasing native device capabilities.</strong>
+    <strong>A premium, modern React Native field data collection app built with Expo, showcasing seamless hardware integration and stunning aesthetics.</strong>
   </p>
 
   <p>
@@ -18,7 +18,7 @@
 
 ## 🌟 Overview
 
-**Native Project** is a feature-rich mobile application demonstrating seamless integration with device hardware APIs using Expo. Designed with modern UI/UX principles, the app features a responsive drawer navigation and integrates core functionalities like device camera, location services, contact management, and clipboard utilities all under one roof.
+**SmartSurvey** is a feature-rich mobile application demonstrating seamless integration with device hardware APIs using Expo. Designed with a highly premium, modern aesthetic, the app features a custom light/dark mode theme system, glassmorphic UI elements, and a dynamic dashboard. It integrates core functionalities like the device camera, location services, contact management, and clipboard utilities into a unified field survey workflow.
 
 ### 🎥 See it in Action
 
@@ -34,12 +34,13 @@ Experience the app natively on your Android device:
 
 ## ✨ Features
 
+- **🎨 Premium UI/UX:** Stunning "financial app" aesthetic with deep dark mode, vibrant lime green accents, and custom glassmorphic components.
+- **🌗 Custom Theme Engine:** A bespoke state-managed theme store supporting seamless switching between Light, Dark, and System appearance.
 - **📸 Camera Integration:** Capture photos and perform field surveys using `expo-camera`.
 - **📍 Location & Maps:** Fetch and display real-time coordinates using `expo-location`.
 - **📋 Clipboard Manager:** Easily copy and paste device data safely with `expo-clipboard`.
 - **📇 Contact Sync:** Browse and manage device contacts seamlessly via `expo-contacts`.
-- **📱 Responsive UI:** Modern design utilizing React Native Reanimated and Safe Area views.
-- **🧭 Intuitive Navigation:** Easy-to-use drawer and tab layouts built on Expo Router.
+- **🧭 Intuitive Navigation:** Responsive drawer and tab layouts built on Expo Router.
 
 ---
 
@@ -49,7 +50,7 @@ Experience the app natively on your Android device:
 - **SDK:** [Expo (v54)](https://expo.dev)
 - **Routing:** [Expo Router](https://docs.expo.dev/router/introduction/)
 - **Navigation:** React Navigation (Drawer & Tabs)
-- **State/Storage:** AsyncStorage
+- **State/Storage:** Zustand & AsyncStorage
 - **Language:** TypeScript
 
 ---
