@@ -15,6 +15,7 @@ export default function ClipboardScreen() {
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
   const primary = useThemeColor({}, 'primary');
+  const primaryText = useThemeColor({}, 'primaryText');
   const primaryLight = useThemeColor({}, 'primaryLight');
   const cardBorder = useThemeColor({}, 'cardBorder');
   const card = useThemeColor({}, 'card');
@@ -30,11 +31,16 @@ export default function ClipboardScreen() {
 
   useEffect(() => {
     checkClipboard();
-    const subscription = Clipboard.addClipboardListener(() => {
-      checkClipboard();
-    });
+    let subscription: any = null;
+    if (Platform.OS !== 'web') {
+      subscription = Clipboard.addClipboardListener(() => {
+        checkClipboard();
+      });
+    }
     return () => {
-      Clipboard.removeClipboardListener(subscription);
+      if (subscription) {
+        Clipboard.removeClipboardListener(subscription);
+      }
     };
   }, []);
 
@@ -134,8 +140,8 @@ export default function ClipboardScreen() {
               ]}
               onPress={handlePaste}
             >
-              <MaterialIcons name="content-paste" size={16} color="#FFFFFF" />
-              <Text style={styles.pasteBtnText}>Paste</Text>
+              <MaterialIcons name="content-paste" size={16} color={primaryText} />
+              <Text style={[styles.pasteBtnText, { color: primaryText }]}>Paste</Text>
             </Pressable>
           </View>
           
@@ -268,7 +274,6 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   pasteBtnText: {
-    color: '#FFFFFF',
     fontSize: 13,
     fontWeight: '600',
   },

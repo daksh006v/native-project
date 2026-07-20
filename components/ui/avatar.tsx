@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text } from 'react-native';
-import { useThemeColor } from '@/hooks/use-theme-color';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type AvatarProps = {
   name: string;
@@ -8,9 +8,6 @@ type AvatarProps = {
 };
 
 export function Avatar({ name, size = 48 }: AvatarProps) {
-  const primary = useThemeColor({}, 'primary');
-  const primaryLight = useThemeColor({}, 'primaryLight');
-
   const initials = name
     .split(' ')
     .map((part) => part[0])
@@ -19,30 +16,40 @@ export function Avatar({ name, size = 48 }: AvatarProps) {
     .slice(0, 2);
 
   return (
-    <View
-      style={[
-        styles.avatar,
-        {
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-          backgroundColor: primary,
-        },
-      ]}
-    >
-      <Text style={[styles.initials, { color: primaryLight, fontSize: size * 0.38 }]}>
-        {initials}
-      </Text>
+    <View style={[styles.ring, { width: size + 4, height: size + 4, borderRadius: (size + 4) / 2 }]}>
+      <LinearGradient
+        colors={['#B4AAFF', '#87F29A']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={[
+          styles.avatar,
+          {
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+          },
+        ]}
+      >
+        <Text style={[styles.initials, { fontSize: size * 0.36 }]}>
+          {initials}
+        </Text>
+      </LinearGradient>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  ring: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+  },
   avatar: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   initials: {
-    fontWeight: '700',
+    fontFamily: 'Inter_700Bold',
+    color: '#FFFFFF',
   },
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
+import { StyleSheet, View, Text, TextInput, type TextInputProps, Platform } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -7,42 +7,45 @@ type FormFieldProps = TextInputProps & {
   label: string;
   error?: string;
   icon?: keyof typeof MaterialIcons.glyphMap;
-  required?: boolean;
 };
 
-export function FormField({ label, error, icon, required, ...inputProps }: FormFieldProps) {
+export function FormField({ label, error, icon, style, ...props }: FormFieldProps) {
   const text = useThemeColor({}, 'text');
-  const muted = useThemeColor({}, 'muted');
-  const cardBorder = useThemeColor({}, 'cardBorder');
+  const background = useThemeColor({}, 'background');
+  const cardBorder = useThemeColor({}, 'cardBorder'); // 'transparent' now
+  const primaryLight = useThemeColor({}, 'primaryLight');
   const danger = useThemeColor({}, 'danger');
-  const mutedLight = useThemeColor({}, 'mutedLight');
+  const muted = useThemeColor({}, 'muted');
 
   return (
     <View style={styles.container}>
-      <View style={styles.labelRow}>
-        {icon && <MaterialIcons name={icon} size={16} color={muted} style={styles.labelIcon} />}
-        <Text style={[styles.label, { color: muted }]}>{label}</Text>
-        {required && <Text style={[styles.required, { color: danger }]}>*</Text>}
-      </View>
-
-      <TextInput
+      <Text style={[styles.label, { color: text }]}>{label}</Text>
+      <View
         style={[
-          styles.input,
-          {
-            backgroundColor: mutedLight,
-            color: text,
-            borderColor: error ? danger : cardBorder,
+          styles.inputContainer,
+          { 
+            backgroundColor: primaryLight, // Using the soft grey/dark surface for inputs
+            borderColor: error ? danger : 'transparent',
+            borderWidth: error ? 1 : 0,
           },
         ]}
-        placeholderTextColor={muted}
-        {...inputProps}
-      />
-
+      >
+        {icon && (
+          <MaterialIcons name={icon} size={20} color={muted} style={styles.icon} />
+        )}
+        <TextInput
+          style={[
+            styles.input,
+            { color: text },
+            icon ? { paddingLeft: 8 } : { paddingLeft: 16 },
+            style,
+          ]}
+          placeholderTextColor={muted}
+          {...props}
+        />
+      </View>
       {error ? (
-        <View style={styles.errorRow}>
-          <MaterialIcons name="error-outline" size={14} color={danger} />
-          <Text style={[styles.error, { color: danger }]}>{error}</Text>
-        </View>
+        <Text style={[styles.errorText, { color: danger }]}>{error}</Text>
       ) : null}
     </View>
   );
@@ -50,39 +53,35 @@ export function FormField({ label, error, icon, required, ...inputProps }: FormF
 
 const styles = StyleSheet.create({
   container: {
-    gap: 8,
-  },
-  labelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  labelIcon: {
-    marginRight: 6,
+    marginBottom: 20,
   },
   label: {
+    fontFamily: 'Inter_600SemiBold',
     fontSize: 14,
-    fontWeight: '600',
-  },
-  required: {
-    fontSize: 14,
-    fontWeight: '700',
+    marginBottom: 8,
     marginLeft: 4,
   },
-  input: {
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    fontSize: 15,
-    fontWeight: '500',
-  },
-  errorRow: {
+  inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    borderRadius: 16,
+    minHeight: 56,
   },
-  error: {
+  icon: {
+    paddingLeft: 16,
+  },
+  input: {
+    flex: 1,
+    height: '100%',
+    paddingRight: 16,
+    fontFamily: 'Inter_500Medium',
+    fontSize: 16,
+    paddingVertical: Platform.OS === 'ios' ? 16 : 12,
+  },
+  errorText: {
+    fontFamily: 'Inter_500Medium',
     fontSize: 12,
-    fontWeight: '500',
+    marginTop: 6,
+    marginLeft: 4,
   },
 });

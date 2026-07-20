@@ -15,6 +15,7 @@ export default function LocationScreen() {
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
   const primary = useThemeColor({}, 'primary');
+  const primaryText = useThemeColor({}, 'primaryText');
   const primaryLight = useThemeColor({}, 'primaryLight');
   const card = useThemeColor({}, 'card');
   const border = useThemeColor({}, 'cardBorder');
@@ -81,8 +82,8 @@ export default function LocationScreen() {
           ]}
           onPress={requestPermission}
         >
-          <MaterialIcons name="my-location" size={20} color="#FFFFFF" />
-          <Text style={styles.permButtonText}>Grant Permission</Text>
+          <MaterialIcons name="my-location" size={20} color={primaryText} />
+          <Text style={[styles.permButtonText, { color: primaryText }]}>Grant Permission</Text>
         </Pressable>
       </View>
     );
@@ -154,8 +155,8 @@ export default function LocationScreen() {
                 ]}
                 onPress={copyToClipboard}
               >
-                <MaterialIcons name="content-copy" size={20} color="#FFFFFF" />
-                <Text style={[styles.actionBtnText, { color: '#FFFFFF' }]}>Copy</Text>
+                <MaterialIcons name="content-copy" size={20} color={primaryText} />
+                <Text style={[styles.actionBtnText, { color: primaryText }]}>Copy</Text>
               </Pressable>
             </View>
           </View>
@@ -290,7 +291,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   permButtonText: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },

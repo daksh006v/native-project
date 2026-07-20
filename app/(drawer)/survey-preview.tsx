@@ -31,6 +31,7 @@ export default function SurveyPreviewScreen() {
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
   const primary = useThemeColor({}, 'primary');
+  const primaryText = useThemeColor({}, 'primaryText');
   const primaryLight = useThemeColor({}, 'primaryLight');
   const card = useThemeColor({}, 'card');
   const cardBorder = useThemeColor({}, 'cardBorder');
@@ -124,7 +125,7 @@ export default function SurveyPreviewScreen() {
         <Card style={styles.descriptionCard}>
           <View style={styles.descriptionHeader}>
             <MaterialIcons name="description" size={20} color={muted} />
-            <Text style={[styles.descriptionLabel, { color: muted }]}>Description</Text>
+            <Text style={[styles.descriptionLabel, { color: muted }]}>DESCRIPTION</Text>
           </View>
           <Text style={[styles.descriptionText, { color: text }]}>
             {params.description || 'No description provided.'}
@@ -132,7 +133,7 @@ export default function SurveyPreviewScreen() {
         </Card>
 
         <Card style={styles.attachmentsCard}>
-          <Text style={[styles.attachmentsTitle, { color: text }]}>Attachments & Data</Text>
+          <Text style={[styles.attachmentsTitle, { color: text }]}>ATTACHMENTS & DATA</Text>
           {[
             { icon: 'camera-alt' as const, label: 'Photo', status: 'Not Attached' },
             { icon: 'contacts' as const, label: 'Contact', status: 'Not Linked' },
@@ -176,11 +177,11 @@ export default function SurveyPreviewScreen() {
             disabled={saving}
           >
             {saving ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
+              <ActivityIndicator size="small" color={primaryText} />
             ) : (
               <>
-                <MaterialIcons name="check-circle" size={20} color="#FFFFFF" />
-                <Text style={[styles.actionBtnText, { color: '#FFFFFF' }]}>Submit Survey</Text>
+                <MaterialIcons name="check-circle" size={20} color={primaryText} />
+                <Text style={[styles.actionBtnText, { color: primaryText }]}>Submit Survey</Text>
               </>
             )}
           </Pressable>
@@ -284,19 +285,21 @@ const styles = StyleSheet.create({
   },
   descriptionLabel: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   descriptionText: {
     fontSize: 15,
     lineHeight: 22,
-    fontWeight: '400',
+    fontWeight: '500',
   },
   attachmentsCard: {
     padding: 20,
   },
   attachmentsTitle: {
-    fontSize: 16,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: 0.5,
     marginBottom: 4,
   },
   attachRow: {

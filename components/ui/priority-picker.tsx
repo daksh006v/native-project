@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Pressable, Modal } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View, Pressable, Platform } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -12,52 +12,48 @@ type PriorityPickerProps = {
 };
 
 const PRIORITIES: { key: Priority; label: string; color: string; bg: string }[] = [
-  { key: 'low', label: 'Low', color: '#22C55E', bg: '#F0FDF4' },
-  { key: 'medium', label: 'Medium', color: '#F59E0B', bg: '#FFFBEB' },
-  { key: 'high', label: 'High', color: '#F97316', bg: '#FFF7ED' },
-  { key: 'critical', label: 'Critical', color: '#EF4444', bg: '#FEF2F2' },
+  { key: 'low', label: 'Low', color: '#16A34A', bg: '#DCFCE7' },
+  { key: 'medium', label: 'Medium', color: '#D97706', bg: '#FEF3C7' },
+  { key: 'high', label: 'High', color: '#EA580C', bg: '#FFEDD5' },
+  { key: 'critical', label: 'Critical', color: '#DC2626', bg: '#FEE2E2' },
 ];
 
 export function PriorityPicker({ value, onChange, error }: PriorityPickerProps) {
-  const [visible, setVisible] = useState(false);
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
-  const card = useThemeColor({}, 'card');
-  const cardBorder = useThemeColor({}, 'cardBorder');
   const danger = useThemeColor({}, 'danger');
-  const mutedLight = useThemeColor({}, 'mutedLight');
-
-  const selected = PRIORITIES.find((p) => p.key === value);
+  const cardBorder = useThemeColor({}, 'cardBorder');
+  const card = useThemeColor({}, 'card');
 
   return (
     <View style={styles.container}>
       <View style={styles.labelRow}>
         <MaterialIcons name="flag" size={16} color={muted} style={styles.labelIcon} />
-        <Text style={[styles.label, { color: muted }]}>Priority</Text>
+        <Text style={[styles.label, { color: muted }]}>PRIORITY</Text>
         <Text style={[styles.required, { color: danger }]}>*</Text>
       </View>
 
-      <Pressable
-        style={({ pressed }) => [
-          styles.trigger,
-          {
-            backgroundColor: mutedLight,
-            borderColor: error ? danger : cardBorder,
-          },
-          pressed && styles.pressed,
-        ]}
-        onPress={() => setVisible(true)}
-      >
-        {selected ? (
-          <View style={styles.selectedRow}>
-            <View style={[styles.dot, { backgroundColor: selected.color }]} />
-            <Text style={[styles.selectedText, { color: text }]}>{selected.label}</Text>
-          </View>
-        ) : (
-          <Text style={[styles.placeholder, { color: muted }]}>Select priority</Text>
-        )}
-        <MaterialIcons name="expand-more" size={22} color={muted} />
-      </Pressable>
+      <View style={[styles.pickerRow, error && { borderColor: danger, borderWidth: 1, borderRadius: 12, padding: 2 }]}>
+        {PRIORITIES.map((p) => {
+          const isSelected = p.key === value;
+          return (
+            <Pressable
+              key={p.key}
+              onPress={() => onChange(p.key)}
+              style={({ pressed }) => [
+                styles.option,
+                { backgroundColor: isSelected ? p.bg : card, borderColor: isSelected ? p.color : cardBorder },
+                pressed && styles.pressed,
+                Platform.OS === 'ios' && isSelected && { shadowColor: p.color, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 4 }
+              ]}
+            >
+              <Text style={[styles.optionText, { color: isSelected ? p.color : muted, fontWeight: isSelected ? '700' : '500' }]}>
+                {p.label}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </View>
 
       {error ? (
         <View style={styles.errorRow}>
@@ -65,35 +61,6 @@ export function PriorityPicker({ value, onChange, error }: PriorityPickerProps) 
           <Text style={[styles.error, { color: danger }]}>{error}</Text>
         </View>
       ) : null}
-
-      <Modal visible={visible} transparent animationType="fade">
-        <Pressable style={styles.overlay} onPress={() => setVisible(false)}>
-          <View style={[styles.sheet, { backgroundColor: card }]}>
-            <Text style={[styles.sheetTitle, { color: text }]}>Select Priority</Text>
-            {PRIORITIES.map((p) => (
-              <Pressable
-                key={p.key}
-                style={({ pressed }) => [
-                  styles.option,
-                  { borderBottomColor: cardBorder },
-                  p.key === value && { backgroundColor: p.bg },
-                  pressed && styles.optionPressed,
-                ]}
-                onPress={() => {
-                  onChange(p.key);
-                  setVisible(false);
-                }}
-              >
-                <View style={[styles.dot, { backgroundColor: p.color }]} />
-                <Text style={[styles.optionText, { color: text }]}>{p.label}</Text>
-                {p.key === value && (
-                  <MaterialIcons name="check" size={20} color={p.color} />
-                )}
-              </Pressable>
-            ))}
-          </View>
-        </Pressable>
-      </Modal>
     </View>
   );
 }
@@ -111,85 +78,42 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   required: {
     fontSize: 14,
     fontWeight: '700',
     marginLeft: 4,
   },
-  trigger: {
+  pickerRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  option: {
+    flex: 1,
+    minWidth: '48%', // Allows 2x2 grid on small screens, or 4 in a row on wide
+    paddingVertical: 12,
     borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  optionText: {
+    fontSize: 15,
   },
   pressed: {
     opacity: 0.7,
-  },
-  selectedRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-  },
-  selectedText: {
-    fontSize: 15,
-    fontWeight: '500',
-  },
-  placeholder: {
-    fontSize: 15,
-    fontWeight: '400',
   },
   errorRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    marginTop: 2,
   },
   error: {
     fontSize: 12,
-    fontWeight: '500',
-  },
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  sheet: {
-    width: '100%',
-    borderRadius: 20,
-    padding: 8,
-    gap: 4,
-  },
-  sheetTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    padding: 12,
-    paddingBottom: 8,
-  },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-  },
-  optionPressed: {
-    opacity: 0.7,
-  },
-  optionText: {
-    flex: 1,
-    fontSize: 15,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });

@@ -72,7 +72,7 @@ export function DatePickerField({ value, onChange, error }: DatePickerFieldProps
       <Pressable
         style={({ pressed }) => [
           styles.trigger,
-          { backgroundColor: mutedLight, borderColor: error ? danger : cardBorder },
+          { backgroundColor: card, borderColor: error ? danger : cardBorder },
           pressed && styles.pressed,
         ]}
         onPress={() => setVisible(true)}
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   container: { gap: 8 },
   labelRow: { flexDirection: 'row', alignItems: 'center' },
   labelIcon: { marginRight: 6 },
-  label: { fontSize: 14, fontWeight: '600' },
+  label: { fontSize: 14, fontWeight: '700', letterSpacing: 0.5 },
   required: { fontSize: 14, fontWeight: '700', marginLeft: 4 },
   trigger: {
     flexDirection: 'row',
@@ -176,10 +176,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
   },
   pressed: { opacity: 0.7 },
-  selectedText: { fontSize: 15, fontWeight: '500' },
-  placeholder: { fontSize: 15, fontWeight: '400' },
-  errorRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  error: { fontSize: 12, fontWeight: '500' },
+  selectedText: { fontSize: 16, fontWeight: '500' },
+  placeholder: { fontSize: 16, fontWeight: '400' },
+  errorRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  error: { fontSize: 12, fontWeight: '600' },
   overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'center', alignItems: 'center', padding: 32 },
   sheet: { width: '100%', borderRadius: 20, padding: 20, gap: 20 },
   sheetTitle: { fontSize: 17, fontWeight: '700', textAlign: 'center' },

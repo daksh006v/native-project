@@ -8,6 +8,7 @@ import {
   Alert,
   ActivityIndicator,
   Modal,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CameraView, useCameraPermissions, type CameraType } from 'expo-camera';
@@ -25,6 +26,7 @@ type CapturedPhoto = {
 };
 
 async function ensureDir() {
+  if (Platform.OS === 'web') return;
   const dirInfo = await FileSystem.getInfoAsync(PHOTO_DIR);
   if (!dirInfo.exists) {
     await FileSystem.makeDirectoryAsync(PHOTO_DIR, { intermediates: true });
@@ -40,6 +42,7 @@ export default function CameraScreen() {
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
   const primary = useThemeColor({}, 'primary');
+  const primaryText = useThemeColor({}, 'primaryText');
   const primaryLight = useThemeColor({}, 'primaryLight');
 
   const [permission, requestPermission] = useCameraPermissions();
@@ -64,11 +67,16 @@ export default function CameraScreen() {
     try {
       const result = await cameraRef.current.takePictureAsync();
       if (result?.uri) {
-        await ensureDir();
+        let dest = result.uri;
         const timestamp = Date.now();
         const fileName = `survey_${timestamp}.jpg`;
-        const dest = `${PHOTO_DIR}${fileName}`;
-        await FileSystem.copyAsync({ from: result.uri, to: dest });
+        
+        if (Platform.OS !== 'web') {
+          await ensureDir();
+          dest = `${PHOTO_DIR}${fileName}`;
+          await FileSystem.copyAsync({ from: result.uri, to: dest });
+        }
+
         const photo: CapturedPhoto = {
           uri: dest,
           savedAt: new Date(),
@@ -170,8 +178,8 @@ export default function CameraScreen() {
           ]}
           onPress={requestPermission}
         >
-          <MaterialIcons name="camera" size={20} color="#FFFFFF" />
-          <Text style={styles.permButtonText}>Grant Permission</Text>
+          <MaterialIcons name="camera" size={20} color={primaryText} />
+          <Text style={[styles.permButtonText, { color: primaryText }]}>Grant Permission</Text>
         </Pressable>
       </View>
     );
@@ -365,7 +373,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   permButtonText: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },

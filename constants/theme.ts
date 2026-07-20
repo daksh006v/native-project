@@ -1,64 +1,69 @@
 import { Platform } from 'react-native';
 
-const tintColorLight = '#1B6B4A';
-const tintColorDark = '#4ADE80';
-
 export const Colors = {
+  // Light Mode: Clean & Playful (Mint/Lavender)
   light: {
-    text: '#11181C',
-    background: '#F5F7FA',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: '#1A1A2E',
+    background: '#F4F5F7',
+    tint: '#1A1A2E',
+    icon: '#8E8EA0',
+    tabIconDefault: '#8E8EA0',
+    tabIconSelected: '#1A1A2E',
     card: '#FFFFFF',
-    cardBorder: '#E5E7EB',
-    primary: '#1B6B4A',
-    primaryLight: '#E8F5EE',
-    accent: '#F59E0B',
-    accentLight: '#FEF3C7',
-    danger: '#EF4444',
-    dangerLight: '#FEE2E2',
-    muted: '#6B7280',
-    mutedLight: '#F3F4F6',
-    separator: '#E5E7EB',
+    cardBorder: 'transparent',
+    primary: '#1A1A2E',         // dark button
+    primaryText: '#FFFFFF',
+    primaryLight: '#E8E8EE',    // soft gray surface
+    accent: '#87F29A',          // mint green
+    accentText: '#1A1A2E',
+    danger: '#FF6B6B',
+    dangerLight: '#FFE0E0',
+    muted: '#8E8EA0',
+    mutedLight: '#F0F0F3',
+    separator: '#EBEBEF',
+    heroCard: '#1A1A2E',        // dark for the welcome card
+    heroText: '#FFFFFF',
+    heroAccent: '#87F29A',
+    // Drawer
     drawerBackground: '#FFFFFF',
-    drawerActive: '#1B6B4A',
-    drawerInactive: '#6B7280',
+    drawerActive: '#1A1A2E',
+    drawerInactive: '#8E8EA0',
   },
+  // Dark Mode: Dark & Premium (Finance app - Neon Green / Vibrant Blue)
   dark: {
-    text: '#ECEDEE',
-    background: '#0F172A',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
-    card: '#1E293B',
-    cardBorder: '#334155',
-    primary: '#4ADE80',
-    primaryLight: '#14532D',
-    accent: '#FBBF24',
-    accentLight: '#78350F',
-    danger: '#F87171',
-    dangerLight: '#7F1D1D',
-    muted: '#94A3B8',
-    mutedLight: '#1E293B',
-    separator: '#334155',
-    drawerBackground: '#1E293B',
-    drawerActive: '#4ADE80',
-    drawerInactive: '#94A3B8',
+    text: '#FFFFFF',
+    background: '#000000',
+    tint: '#87F29A',
+    icon: '#888888',
+    tabIconDefault: '#888888',
+    tabIconSelected: '#FFFFFF',
+    card: '#161618',
+    cardBorder: 'transparent',
+    primary: '#FFFFFF',         // white button / text
+    primaryText: '#000000',
+    primaryLight: '#222222',    // dark surface
+    accent: '#87F29A',          // bright lime green
+    accentText: '#1A1A2E',
+    danger: '#FF4444',
+    dangerLight: '#331111',
+    muted: '#888888',
+    mutedLight: '#222222',
+    separator: '#222222',
+    heroCard: '#161618',        // dark card matching overall theme
+    heroText: '#FFFFFF',
+    heroAccent: '#87F29A',      // bright lime green accent
+    // Drawer
+    drawerBackground: '#000000',
+    drawerActive: '#FFFFFF',
+    drawerInactive: '#888888',
   },
 };
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: 'ui-monospace',
   },
   default: {

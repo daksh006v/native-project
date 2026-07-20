@@ -1,101 +1,74 @@
 import React, { useState } from 'react';
-import {
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Pressable, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { useNavigation, DrawerActions } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import { useNavigation, DrawerActions } from '@react-navigation/native';
+import { useThemeColor } from '@/hooks/use-theme-color';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Card } from '@/components/ui/card';
 import { FormField } from '@/components/ui/form-field';
-import { PriorityPicker } from '@/components/ui/priority-picker';
-import { DatePickerField } from '@/components/ui/date-picker-field';
 
-type Priority = 'low' | 'medium' | 'high' | 'critical';
+const PRIORITIES = [
+  { id: 'low', label: 'Low', icon: 'low-priority' as const, themeKey: 'muted' },
+  { id: 'medium', label: 'Medium', icon: 'drag-handle' as const, themeKey: 'text' }, 
+  { id: 'high', label: 'High', icon: 'priority-high' as const, themeKey: 'accent' },
+  { id: 'critical', label: 'Critical', icon: 'warning' as const, themeKey: 'danger' },
+] as const;
 
-type FormErrors = {
-  siteName?: string;
-  clientName?: string;
-  description?: string;
-  priority?: string;
-  date?: string;
-};
-
-export default function CreateSurveyScreen() {
-  const navigation = useNavigation();
+export default function NewSurveyScreen() {
   const router = useRouter();
+  const navigation = useNavigation();
   const insets = useSafeAreaInsets();
+  
   const background = useThemeColor({}, 'background');
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
   const primary = useThemeColor({}, 'primary');
+  const primaryText = useThemeColor({}, 'primaryText');
+  const primaryLight = useThemeColor({}, 'primaryLight');
+  const accent = useThemeColor({}, 'accent');
   const danger = useThemeColor({}, 'danger');
-  const mutedLight = useThemeColor({}, 'mutedLight');
-  const cardBorder = useThemeColor({}, 'cardBorder');
+  const themeColors = {
+    muted,
+    text,
+    accent,
+    danger,
+  };
 
-  const [siteName, setSiteName] = useState('');
-  const [clientName, setClientName] = useState('');
-  const [description, setDescription] = useState('');
-  const [priority, setPriority] = useState<Priority | null>(null);
-  const [date, setDate] = useState<Date | null>(null);
-  const [errors, setErrors] = useState<FormErrors>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    siteName: '',
+    clientName: '',
+    description: '',
+    priority: 'medium',
+  });
 
-  const validate = (): boolean => {
-    const newErrors: FormErrors = {};
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-    if (!siteName.trim()) {
-      newErrors.siteName = 'Site name is required';
-    } else if (siteName.trim().length < 3) {
-      newErrors.siteName = 'Site name must be at least 3 characters';
-    }
-
-    if (!clientName.trim()) {
-      newErrors.clientName = 'Client name is required';
-    } else if (clientName.trim().length < 3) {
-      newErrors.clientName = 'Client name must be at least 3 characters';
-    }
-
-    if (!description.trim()) {
-      newErrors.description = 'Description is required';
-    } else if (description.trim().length < 10) {
-      newErrors.description = 'Description must be at least 10 characters';
-    }
-
-    if (!priority) newErrors.priority = 'Please select a priority';
-    if (!date) newErrors.date = 'Please select a date';
-
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.siteName.trim()) newErrors.siteName = 'Site name is required';
+    if (!formData.clientName.trim()) newErrors.clientName = 'Client name is required';
+    if (!formData.description.trim()) newErrors.description = 'Description is required';
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  React.useEffect(() => {
-    if (submitted) {
-      validate();
+  const handleNext = () => {
+    if (validate()) {
+      router.push({
+        pathname: '/(drawer)/survey-preview',
+        params: {
+          siteName: formData.siteName,
+          clientName: formData.clientName,
+          description: formData.description,
+          priority: formData.priority,
+          date: new Date().toISOString(),
+        }
+      });
+    } else {
+      Alert.alert('Missing Fields', 'Please fill in all required fields.');
     }
-  }, [siteName, clientName, description, priority, date, submitted]);
-
-  const handleSubmit = () => {
-    setSubmitted(true);
-    if (!validate()) return;
-
-    router.push({
-      pathname: '/(drawer)/survey-preview',
-      params: {
-        siteName: siteName.trim(),
-        clientName: clientName.trim(),
-        description: description.trim(),
-        priority: priority!,
-        date: date!.toISOString(),
-      },
-    });
   };
 
   const openDrawer = () => {
@@ -103,125 +76,136 @@ export default function CreateSurveyScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={[styles.container, { backgroundColor: background }]}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-    >
-      <View
-        style={[
-          styles.header,
-          { paddingTop: insets.top + 8, backgroundColor: background },
-        ]}
-      >
+    <View style={[styles.container, { backgroundColor: background }]}>
+      <View style={[styles.header, { paddingTop: insets.top + 16, backgroundColor: background }]}>
+        <Text style={[styles.headerTitle, { color: text }]}>New Survey</Text>
         <Pressable
           style={({ pressed }) => [styles.menuButton, pressed && styles.pressed]}
           onPress={openDrawer}
           hitSlop={12}
         >
-          <MaterialIcons name="menu" size={24} color={text} />
+          <MaterialIcons name="menu" size={28} color={text} />
         </Pressable>
-
-        <View style={styles.titleSection}>
-          <Text style={[styles.title, { color: text }]}>New Survey</Text>
-          <Text style={[styles.subtitle, { color: muted }]}>Fill in the survey details</Text>
-        </View>
       </View>
 
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 32 }]}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}
       >
-        <Card style={styles.formCard}>
-          <FormField
-            label="Site Name"
-            icon="place"
-            placeholder="Enter site name"
-            value={siteName}
-            onChangeText={setSiteName}
-            error={submitted ? errors.siteName : undefined}
-            required
-            autoCapitalize="words"
-          />
+        <ScrollView
+          contentContainerStyle={[styles.content, { paddingBottom: 40 }]}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          <Card style={styles.card}>
+            <Text style={[styles.sectionTitle, { color: text }]}>General Details</Text>
+            
+            <FormField
+              label="Site Name"
+              placeholder="e.g. Downtown Plaza"
+              icon="place"
+              value={formData.siteName}
+              onChangeText={(t) => {
+                setFormData({ ...formData, siteName: t });
+                if (errors.siteName) setErrors({ ...errors, siteName: '' });
+              }}
+              error={errors.siteName}
+            />
 
-          <FormField
-            label="Client Name"
-            icon="person"
-            placeholder="Enter client name"
-            value={clientName}
-            onChangeText={setClientName}
-            error={submitted ? errors.clientName : undefined}
-            required
-            autoCapitalize="words"
-          />
+            <FormField
+              label="Client Name"
+              placeholder="e.g. Acme Corp"
+              icon="person"
+              value={formData.clientName}
+              onChangeText={(t) => {
+                setFormData({ ...formData, clientName: t });
+                if (errors.clientName) setErrors({ ...errors, clientName: '' });
+              }}
+              error={errors.clientName}
+            />
 
-          <View style={styles.fieldContainer}>
-            <View style={styles.labelRow}>
-              <MaterialIcons name="description" size={16} color={muted} style={styles.labelIcon} />
-              <Text style={[styles.label, { color: muted }]}>Description</Text>
-              <Text style={[styles.required, { color: danger }]}>*</Text>
+            <FormField
+              label="Description"
+              placeholder="Brief overview of the survey..."
+              icon="description"
+              multiline
+              numberOfLines={4}
+              style={styles.textArea}
+              value={formData.description}
+              onChangeText={(t) => {
+                setFormData({ ...formData, description: t });
+                if (errors.description) setErrors({ ...errors, description: '' });
+              }}
+              error={errors.description}
+            />
+          </Card>
+
+          <Card style={styles.card}>
+            <Text style={[styles.sectionTitle, { color: text }]}>Priority Level</Text>
+            <View style={styles.priorityGrid}>
+              {PRIORITIES.map((p) => {
+                const isSelected = formData.priority === p.id;
+                const activeColor = themeColors[p.themeKey];
+                
+                return (
+                  <Pressable
+                    key={p.id}
+                    style={({ pressed }) => [
+                      styles.priorityCard,
+                      { 
+                        backgroundColor: isSelected ? activeColor + '15' : primaryLight,
+                        borderColor: isSelected ? activeColor : 'transparent',
+                        borderWidth: 2,
+                      },
+                      pressed && styles.pressed,
+                    ]}
+                    onPress={() => setFormData({ ...formData, priority: p.id })}
+                  >
+                    <MaterialIcons
+                      name={p.icon}
+                      size={24}
+                      color={isSelected ? activeColor : text}
+                      style={{ marginBottom: 8 }}
+                    />
+                    <Text
+                      style={[
+                        styles.priorityLabel,
+                        { color: isSelected ? activeColor : text },
+                      ]}
+                    >
+                      {p.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </View>
-            <View
-              style={[
-                styles.textAreaWrap,
-                {
-                  backgroundColor: mutedLight,
-                  borderColor: submitted && errors.description ? danger : cardBorder,
-                },
-              ]}
-            >
-              <ScrollView
-                style={styles.textAreaScroll}
-                nestedScrollEnabled
-                showsVerticalScrollIndicator={false}
-              >
-                <Text style={styles.hiddenText}>{description || ' '}</Text>
-                <FormField
-                  label=""
-                  placeholder="Describe the survey scope and objectives..."
-                  value={description}
-                  onChangeText={setDescription}
-                  multiline
-                  numberOfLines={5}
-                  style={styles.textAreaInput}
-                />
-              </ScrollView>
-            </View>
-            {submitted && errors.description ? (
-              <View style={styles.errorRow}>
-                <MaterialIcons name="error-outline" size={14} color={danger} />
-                <Text style={[styles.error, { color: danger }]}>{errors.description}</Text>
-              </View>
-            ) : null}
-          </View>
+          </Card>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
-          <PriorityPicker
-            value={priority}
-            onChange={setPriority}
-            error={submitted ? errors.priority : undefined}
-          />
-
-          <DatePickerField
-            value={date}
-            onChange={setDate}
-            error={submitted ? errors.date : undefined}
-          />
-        </Card>
-
+      <View
+        style={[
+          styles.footer,
+          { 
+            paddingBottom: insets.bottom || 24, 
+            backgroundColor: background,
+          }
+        ]}
+      >
         <Pressable
           style={({ pressed }) => [
             styles.submitButton,
-            { backgroundColor: primary },
-            pressed && styles.pressed,
+            { backgroundColor: accent }, // using the vibrant mint green accent for submit
+            pressed && { opacity: 0.8, transform: [{ scale: 0.98 }] },
           ]}
-          onPress={handleSubmit}
+          onPress={handleNext}
         >
-          <MaterialIcons name="check-circle" size={22} color="#FFFFFF" />
-          <Text style={styles.submitText}>Create Survey</Text>
+          <Text style={[styles.submitButtonText, { color: '#000000' }]}>Continue to Preview</Text>
+          <MaterialIcons name="arrow-forward" size={20} color="#000000" />
         </Pressable>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 }
 
@@ -232,43 +216,74 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingBottom: 14,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    gap: 12,
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingBottom: 16,
+  },
+  headerTitle: {
+    fontFamily: 'Inter_800ExtraBold',
+    fontSize: 24,
+    letterSpacing: -0.5,
   },
   menuButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pressed: { opacity: 0.6 },
-  titleSection: { flex: 1 },
-  title: { fontSize: 18, fontWeight: '700' },
-  subtitle: { fontSize: 13, fontWeight: '500' },
-  scrollView: { flex: 1 },
-  scrollContent: { padding: 16, gap: 20 },
-  formCard: { gap: 20 },
-  fieldContainer: { gap: 8 },
-  labelRow: { flexDirection: 'row', alignItems: 'center' },
-  labelIcon: { marginRight: 6 },
-  label: { fontSize: 14, fontWeight: '600' },
-  required: { fontSize: 14, fontWeight: '700', marginLeft: 4 },
-  textAreaWrap: { borderWidth: 1, borderRadius: 12, minHeight: 120 },
-  textAreaScroll: { minHeight: 120 },
-  hiddenText: { fontSize: 15, fontWeight: '500', position: 'absolute', opacity: 0 },
-  textAreaInput: { minHeight: 120 },
-  errorRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  error: { fontSize: 12, fontWeight: '500' },
+  content: {
+    padding: 16,
+    gap: 20,
+  },
+  card: {
+    padding: 24,
+  },
+  sectionTitle: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  textArea: {
+    minHeight: 120,
+    textAlignVertical: 'top',
+    paddingTop: 16,
+  },
+  priorityGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  priorityCard: {
+    flexBasis: '48%',
+    flexGrow: 1,
+    padding: 16,
+    borderRadius: 16,
+    alignItems: 'center',
+  },
+  priorityLabel: {
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 14,
+  },
+  footer: {
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.05)',
+  },
   submitButton: {
     flexDirection: 'row',
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
-    paddingVertical: 16,
-    borderRadius: 16,
+    gap: 12,
   },
-  submitText: { color: '#FFFFFF', fontSize: 17, fontWeight: '700' },
+  submitButtonText: {
+    fontFamily: 'Inter_700Bold',
+    fontSize: 16,
+  },
+  pressed: {
+    opacity: 0.7,
+  },
 });

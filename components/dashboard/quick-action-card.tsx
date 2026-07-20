@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, Pressable, View } from 'react-native';
+import { StyleSheet, Text, Pressable, View, Platform } from 'react-native';
 import { useThemeColor } from '@/hooks/use-theme-color';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -18,7 +18,7 @@ export function QuickActionCard({
 }: QuickActionCardProps) {
   const colors = {
     primary: { bg: useThemeColor({}, 'primaryLight'), iconColor: useThemeColor({}, 'primary') },
-    accent: { bg: useThemeColor({}, 'accentLight'), iconColor: useThemeColor({}, 'accent') },
+    accent: { bg: useThemeColor({}, 'primaryLight'), iconColor: useThemeColor({}, 'accent') },
     danger: { bg: useThemeColor({}, 'dangerLight'), iconColor: useThemeColor({}, 'danger') },
     muted: { bg: useThemeColor({}, 'mutedLight'), iconColor: useThemeColor({}, 'muted') },
   };
@@ -44,15 +44,21 @@ export function QuickActionCard({
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    alignItems: 'center',
-    gap: 10,
+    alignItems: 'flex-start',
+    gap: 12,
     padding: 16,
     borderRadius: 16,
-    minHeight: 100,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
+    minHeight: 110,
+    ...Platform.select({
+      ios: { shadowColor: '#0F172A', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4 },
+      android: { elevation: 2 },
+    }),
   },
   pressed: {
-    opacity: 0.7,
-    transform: [{ scale: 0.97 }],
+    opacity: 0.8,
+    transform: [{ scale: 0.98 }],
   },
   iconContainer: {
     width: 44,
@@ -62,8 +68,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 13,
-    fontWeight: '600',
-    textAlign: 'center',
+    fontSize: 14,
+    fontWeight: '700',
+    textAlign: 'left',
   },
 });

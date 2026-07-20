@@ -14,18 +14,21 @@ export function RecentSurveyItem({ location, date, status }: RecentSurveyItemPro
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
   const separator = useThemeColor({}, 'separator');
+  const primaryLight = useThemeColor({}, 'primaryLight');
+  const primaryText = useThemeColor({}, 'text'); // using main text color for icon inside primaryLight
+
   const statusConfig = {
-    completed: { label: 'Completed', variant: 'primary' as const },
+    completed: { label: 'Completed', variant: 'accent' as const },
     pending: { label: 'Pending', variant: 'muted' as const },
-    'in-progress': { label: 'In Progress', variant: 'accent' as const },
+    'in-progress': { label: 'In Progress', variant: 'primary' as const },
   };
 
   const { label: statusLabel, variant } = statusConfig[status];
 
   return (
     <View style={[styles.container, { borderBottomColor: separator }]}>
-      <View style={[styles.iconWrap, { backgroundColor: useThemeColor({}, 'primaryLight') }]}>
-        <MaterialIcons name="place" size={20} color={useThemeColor({}, 'primary')} />
+      <View style={[styles.iconWrap, { backgroundColor: primaryLight }]}>
+        <MaterialIcons name="place" size={24} color={primaryText} />
       </View>
       <View style={styles.info}>
         <Text style={[styles.location, { color: text }]} numberOfLines={1}>
@@ -42,27 +45,27 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: 16,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    gap: 12,
+    gap: 16,
   },
   iconWrap: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
   },
   info: {
     flex: 1,
-    gap: 2,
+    gap: 4,
   },
   location: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 16,
   },
   date: {
+    fontFamily: 'Inter_400Regular',
     fontSize: 13,
-    fontWeight: '400',
   },
 });

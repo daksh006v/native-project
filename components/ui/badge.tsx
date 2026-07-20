@@ -10,19 +10,21 @@ type BadgeProps = {
 
 export function Badge({ label, variant = 'primary', style }: BadgeProps) {
   const primary = useThemeColor({}, 'primary');
+  const primaryText = useThemeColor({}, 'primaryText');
   const accent = useThemeColor({}, 'accent');
+  const accentText = useThemeColor({}, 'accentText');
   const danger = useThemeColor({}, 'danger');
   const mutedLight = useThemeColor({}, 'mutedLight');
   const muted = useThemeColor({}, 'muted');
 
-  const colors = {
-    primary: { bg: primary, textColor: '#FFFFFF' },
-    accent: { bg: accent, textColor: '#FFFFFF' },
+  const BADGE_COLORS = {
+    primary: { bg: primary, textColor: primaryText },
+    accent: { bg: accent, textColor: accentText },
     danger: { bg: danger, textColor: '#FFFFFF' },
     muted: { bg: mutedLight, textColor: muted },
   };
 
-  const { bg, textColor } = colors[variant];
+  const { bg, textColor } = BADGE_COLORS[variant];
 
   return (
     <View style={[styles.badge, { backgroundColor: bg }, style]}>
@@ -33,13 +35,15 @@ export function Badge({ label, variant = 'primary', style }: BadgeProps) {
 
 const styles = StyleSheet.create({
   badge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 6,
     borderRadius: 20,
     alignSelf: 'flex-start',
   },
   label: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 11,
+    fontFamily: 'Inter_600SemiBold',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
 });

@@ -15,6 +15,7 @@ export default function ContactsScreen() {
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
   const primary = useThemeColor({}, 'primary');
+  const primaryText = useThemeColor({}, 'primaryText');
   const primaryLight = useThemeColor({}, 'primaryLight');
   const card = useThemeColor({}, 'card');
   const border = useThemeColor({}, 'cardBorder');
@@ -109,8 +110,8 @@ export default function ContactsScreen() {
           ]}
           onPress={requestPermission}
         >
-          <MaterialIcons name="contact-phone" size={20} color="#FFFFFF" />
-          <Text style={styles.permButtonText}>Grant Permission</Text>
+          <MaterialIcons name="contact-phone" size={20} color={primaryText} />
+          <Text style={[styles.permButtonText, { color: primaryText }]}>Grant Permission</Text>
         </Pressable>
       </View>
     );
@@ -199,7 +200,7 @@ export default function ContactsScreen() {
       ) : (
         <FlatList
           data={filteredContacts}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => (item.name ? `${item.name}-${index}` : index.toString())}
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
@@ -378,7 +379,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   permButtonText: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
   },

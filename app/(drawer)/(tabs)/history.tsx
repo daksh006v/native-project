@@ -9,6 +9,7 @@ import {
   TextInput,
   RefreshControl,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
@@ -18,15 +19,16 @@ import { useThemeColor } from '@/hooks/use-theme-color';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Card } from '@/components/ui/card';
 import { getSurveys, deleteSurvey, type Survey } from '@/utils/storage';
+import { Badge } from '@/components/ui/badge';
 
 type Priority = 'low' | 'medium' | 'high' | 'critical';
 type FilterOption = 'all' | Priority;
 
-const priorityColors: Record<Priority, { bg: string; text: string; label: string }> = {
-  low: { bg: '#10B98120', text: '#10B981', label: 'Low' },
-  medium: { bg: '#F59E0B20', text: '#F59E0B', label: 'Medium' },
-  high: { bg: '#F9731620', text: '#F97316', label: 'High' },
-  critical: { bg: '#EF444420', text: '#EF4444', label: 'Critical' },
+const priorityConfig: Record<Priority, { variant: 'primary' | 'accent' | 'danger' | 'muted'; label: string }> = {
+  low: { variant: 'muted', label: 'Low' },
+  medium: { variant: 'primary', label: 'Medium' },
+  high: { variant: 'accent', label: 'High' },
+  critical: { variant: 'danger', label: 'Critical' },
 };
 
 const filterOptions: { key: FilterOption; label: string }[] = [
@@ -46,9 +48,9 @@ export default function HistoryScreen() {
   const text = useThemeColor({}, 'text');
   const muted = useThemeColor({}, 'muted');
   const primary = useThemeColor({}, 'primary');
+  const primaryText = useThemeColor({}, 'primaryText');
   const primaryLight = useThemeColor({}, 'primaryLight');
-  const card = useThemeColor({}, 'card');
-  const cardBorder = useThemeColor({}, 'cardBorder');
+  const cardColor = useThemeColor({}, 'card');
   const danger = useThemeColor({}, 'danger');
 
   const [surveys, setSurveys] = useState<Survey[]>([]);
@@ -137,7 +139,7 @@ export default function HistoryScreen() {
   }, [surveys, activeFilter, searchQuery]);
 
   const renderItem = ({ item }: { item: Survey }) => {
-    const pColor = priorityColors[item.priority as Priority];
+    const config = priorityConfig[item.priority as Priority];
     const dateStr = new Date(item.date).toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -152,41 +154,43 @@ export default function HistoryScreen() {
             <Text style={[styles.surveyName, { color: text }]} numberOfLines={1}>
               {item.siteName}
             </Text>
-            <Text style={[styles.surveyClient, { color: muted }]}>
-              <MaterialIcons name="person" size={13} color={muted} /> {item.clientName}
-            </Text>
+            <View style={styles.clientRow}>
+              <MaterialIcons name="person" size={14} color={muted} />
+              <Text style={[styles.surveyClient, { color: muted }]}>
+                {item.clientName}
+              </Text>
+            </View>
           </View>
           <View style={styles.cardTopRight}>
-            <View style={[styles.priorityBadge, { backgroundColor: pColor.bg }]}>
-              <Text style={[styles.priorityText, { color: pColor.text }]}>{pColor.label}</Text>
-            </View>
+            <Badge label={config.label} variant={config.variant} />
             <Text style={[styles.dateText, { color: muted }]}>{dateStr}</Text>
           </View>
         </View>
 
-        <View style={[styles.cardDivider, { backgroundColor: cardBorder }]} />
+        <View style={styles.cardDivider} />
 
         <View style={styles.cardActions}>
           <Pressable
             style={({ pressed }) => [
               styles.viewBtn,
-              { backgroundColor: primaryLight },
+              { backgroundColor: primary },
               pressed && styles.pressed,
             ]}
             onPress={() => handleView(item)}
           >
-            <MaterialIcons name="visibility" size={16} color={primary} />
-            <Text style={[styles.viewBtnText, { color: primary }]}>View</Text>
+            <MaterialIcons name="visibility" size={18} color={primaryText} />
+            <Text style={[styles.viewBtnText, { color: primaryText }]}>View Details</Text>
           </Pressable>
 
           <Pressable
             style={({ pressed }) => [
               styles.deleteBtn,
+              { backgroundColor: danger + '15' },
               pressed && styles.pressed,
             ]}
             onPress={() => handleDelete(item)}
           >
-            <MaterialIcons name="delete-outline" size={18} color={danger} />
+            <MaterialIcons name="delete-outline" size={20} color={danger} />
           </Pressable>
         </View>
       </Card>
@@ -196,6 +200,7 @@ export default function HistoryScreen() {
   return (
     <View style={[styles.container, { backgroundColor: background }]}>
       <View style={[styles.header, { paddingTop: insets.top + 16, backgroundColor: background }]}>
+        <Text style={[styles.headerTitle, { color: text }]}>History</Text>
         <Pressable
           style={({ pressed }) => [styles.menuButton, pressed && styles.pressed]}
           onPress={openDrawer}
@@ -203,13 +208,11 @@ export default function HistoryScreen() {
         >
           <MaterialIcons name="menu" size={28} color={text} />
         </Pressable>
-        <Text style={[styles.headerTitle, { color: text }]}>Survey History</Text>
-        <View style={{ width: 28 }} />
       </View>
 
       <View style={styles.searchContainer}>
-        <View style={[styles.searchBox, { backgroundColor: cardBorder }]}>
-          <MaterialIcons name="search" size={22} color={muted} style={styles.searchIcon} />
+        <View style={[styles.searchBox, { backgroundColor: cardColor }]}>
+          <MaterialIcons name="search" size={24} color={muted} style={styles.searchIcon} />
           <TextInput
             style={[styles.searchInput, { color: text }]}
             placeholder="Search by site, client, or ID..."
@@ -218,7 +221,7 @@ export default function HistoryScreen() {
             onChangeText={setSearchQuery}
           />
           {searchQuery.length > 0 && (
-            <Pressable onPress={() => setSearchQuery('')} hitSlop={10}>
+            <Pressable onPress={() => setSearchQuery('')} hitSlop={10} style={styles.clearBtn}>
               <MaterialIcons name="close" size={20} color={muted} />
             </Pressable>
           )}
@@ -239,7 +242,7 @@ export default function HistoryScreen() {
                 style={[
                   styles.filterChip,
                   {
-                    backgroundColor: isActive ? primary : cardBorder,
+                    backgroundColor: isActive ? primary : primaryLight,
                   },
                 ]}
                 onPress={() => setActiveFilter(filter.key)}
@@ -247,7 +250,7 @@ export default function HistoryScreen() {
                 <Text
                   style={[
                     styles.filterChipText,
-                    { color: isActive ? '#FFFFFF' : muted },
+                    { color: isActive ? primaryText : muted },
                   ]}
                 >
                   {filter.label}
@@ -286,7 +289,7 @@ export default function HistoryScreen() {
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <View style={[styles.emptyIcon, { backgroundColor: primaryLight }]}>
-                <MaterialIcons name="history" size={48} color={primary} />
+                <MaterialIcons name="history" size={48} color={primaryText} />
               </View>
               <Text style={[styles.emptyTitle, { color: text }]}>No Surveys Found</Text>
               <Text style={[styles.emptyDesc, { color: muted }]}>
@@ -315,40 +318,50 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
     paddingBottom: 16,
   },
   menuButton: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 22,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
+    fontFamily: 'Inter_800ExtraBold',
+    fontSize: 24,
+    letterSpacing: -0.5,
   },
   searchContainer: {
     paddingHorizontal: 16,
-    paddingBottom: 12,
+    paddingBottom: 16,
   },
   searchBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 44,
-    borderRadius: 12,
-    paddingHorizontal: 12,
+    height: 56,
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    ...Platform.select({
+      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.04, shadowRadius: 12 },
+      android: { elevation: 2 },
+    }),
   },
   searchIcon: {
-    marginRight: 8,
+    marginRight: 12,
   },
   searchInput: {
     flex: 1,
     height: '100%',
+    fontFamily: 'Inter_500Medium',
     fontSize: 16,
   },
+  clearBtn: {
+    padding: 4,
+  },
   filterContainer: {
-    paddingBottom: 8,
+    paddingBottom: 12,
   },
   filterList: {
     paddingHorizontal: 16,
@@ -356,21 +369,23 @@ const styles = StyleSheet.create({
   },
   filterChip: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderRadius: 20,
   },
   filterChipText: {
-    fontSize: 13,
-    fontWeight: '600',
+    fontFamily: 'Inter_600SemiBold',
+    fontSize: 14,
+    letterSpacing: 0.2,
   },
   countContainer: {
     paddingHorizontal: 20,
-    paddingBottom: 8,
+    paddingBottom: 12,
   },
   countText: {
-    fontSize: 13,
-    fontWeight: '600',
+    fontFamily: 'Inter_700Bold',
+    fontSize: 12,
     textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   listContent: {
     paddingHorizontal: 16,
@@ -378,8 +393,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   surveyCard: {
-    padding: 16,
-    marginBottom: 12,
+    padding: 20,
+    marginBottom: 16,
   },
   cardTop: {
     flexDirection: 'row',
@@ -388,69 +403,65 @@ const styles = StyleSheet.create({
   cardTopLeft: {
     flex: 1,
     marginRight: 12,
-    gap: 4,
+    gap: 6,
   },
   surveyId: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontFamily: 'Inter_700Bold',
+    fontSize: 11,
     textTransform: 'uppercase',
   },
   surveyName: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontFamily: 'Inter_700Bold',
+    fontSize: 18,
+    letterSpacing: -0.3,
+  },
+  clientRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   surveyClient: {
+    fontFamily: 'Inter_500Medium',
     fontSize: 13,
-    fontWeight: '500',
-    marginTop: 2,
   },
   cardTopRight: {
     alignItems: 'flex-end',
-    gap: 6,
-  },
-  priorityBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 8,
-  },
-  priorityText: {
-    fontSize: 11,
-    fontWeight: '700',
-    textTransform: 'uppercase',
+    gap: 8,
   },
   dateText: {
+    fontFamily: 'Inter_500Medium',
     fontSize: 12,
-    fontWeight: '500',
   },
   cardDivider: {
     height: 1,
     width: '100%',
-    marginVertical: 12,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    marginVertical: 16,
   },
   cardActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 12,
   },
   viewBtn: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 10,
-    gap: 6,
+    justifyContent: 'center',
+    paddingVertical: 12,
+    borderRadius: 12,
+    gap: 8,
   },
   viewBtnText: {
+    fontFamily: 'Inter_600SemiBold',
     fontSize: 14,
-    fontWeight: '600',
   },
   deleteBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(239,68,68,0.1)',
   },
   emptyContainer: {
     flex: 1,
@@ -462,22 +473,23 @@ const styles = StyleSheet.create({
   emptyIcon: {
     width: 96,
     height: 96,
-    borderRadius: 24,
+    borderRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
   },
   emptyTitle: {
+    fontFamily: 'Inter_700Bold',
     fontSize: 18,
-    fontWeight: '600',
-    marginTop: 16,
+    marginTop: 20,
     marginBottom: 8,
   },
   emptyDesc: {
-    fontSize: 15,
+    fontFamily: 'Inter_500Medium',
+    fontSize: 14,
     textAlign: 'center',
     lineHeight: 22,
   },
   pressed: {
-    opacity: 0.6,
+    opacity: 0.7,
   },
 });
