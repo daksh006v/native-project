@@ -21,9 +21,7 @@
 **SmartSurvey** is a feature-rich mobile application demonstrating seamless integration with device hardware APIs using Expo. Designed with a highly premium, modern aesthetic, the app features a custom light/dark mode theme system, glassmorphic UI elements, and a dynamic dashboard. It integrates core functionalities like the device camera, location services, contact management, and clipboard utilities into a unified field survey workflow.
 
 ### 🎥 See it in Action
-
-[![App Demo Video Placeholder](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
-> *[Replace this with the actual YouTube Video Link]*
+https://youtu.be/P_RZXt9bf98?si=7NCKE8lYZdfR9hK9
 
 ### 📥 Download the App
 
